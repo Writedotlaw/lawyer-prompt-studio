@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-ink-900 text-ink-50 font-body antialiased;
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgba(217, 162, 50, 0.35);
+}
+
+.gradient-surface {
+  background: linear-gradient(180deg, rgba(20,26,43,0.95) 0%, rgba(46,36,29,0.95) 100%);
+}
+
+.card {
+  @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm shadow-card;
+}
+
+.tag {
+  @apply inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs text-ink-50;
+}
+
+.section-title {
+  @apply font-display text-2xl text-ink-50;
+}
