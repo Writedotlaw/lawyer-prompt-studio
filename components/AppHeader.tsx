@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { buttonStyles } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import WriteLawMark from "@/components/WriteLawMark";
 
 const navLinks = [
   { href: "/", label: "Overview" },
@@ -19,13 +20,7 @@ export default function AppHeader() {
     <header className="sticky top-0 z-40 border-b border-base-200/10 bg-base-950/80 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-6 px-6 py-4">
         <div className="flex items-center gap-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent-500/20 text-sm font-semibold text-accent-100">
-            LPS
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-base-50">Lawyer Prompt Studio</p>
-            <p className="text-xs text-base-300">Legal prompt intelligence, designed for teams.</p>
-          </div>
+          <WriteLawMark />
         </div>
         <nav className="hidden items-center gap-1 rounded-full border border-base-200/10 bg-base-900/40 p-1 text-sm lg:flex">
           {navLinks.map((link) => {
@@ -42,7 +37,7 @@ export default function AppHeader() {
           })}
         </nav>
         <div className="flex items-center gap-3">
-          <div className="hidden text-xs text-base-300 sm:block">Local-first · Secure by default</div>
+          <div className="hidden text-xs text-base-300 sm:block">Write.law-inspired brand pass · Secure by default</div>
           <Link href="/wizard" className={cn(buttonStyles({ variant: "primary" }), "hidden sm:inline-flex")}>
             Start Wizard
           </Link>

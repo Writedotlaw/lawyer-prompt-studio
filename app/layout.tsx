@@ -27,7 +27,7 @@ export default function RootLayout({
             <footer className="border-t border-base-200/10">
               <div className="mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-4 px-6 py-8 text-xs text-base-300 sm:flex-row sm:items-center">
                 <p>Built for legal teams. Not a law firm. No legal advice.</p>
-                <p>Local-first MVP · 2026</p>
+                <p>Write.law-inspired branding concept · 2026</p>
               </div>
             </footer>
           </div>
