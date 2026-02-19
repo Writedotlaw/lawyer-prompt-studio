@@ -16,6 +16,13 @@ MVP web app for ready-to-ship legal prompt templates plus a guided template wiza
 - TypeScript
 - Tailwind CSS
 
+## UI Refresh
+
+- Introduced design tokens (color, type, radii, shadows) for a cohesive SaaS-grade system
+- Added reusable UI primitives (buttons, cards, tags, inputs, section headers)
+- Redesigned home, library, template detail, wizard, and my-templates for stronger hierarchy and scannability
+- Added sticky filters, richer empty states, and polished interactions
+
 ## Setup
 
 ```bash

@@ -5,6 +5,13 @@ import Link from "next/link";
 import { templates } from "@/lib/templates";
 import { Difficulty, ModelCompatibility, PracticeArea, TaskType } from "@/lib/types";
 import { scorePrompt } from "@/lib/quality";
+import Card from "@/components/ui/Card";
+import SectionHeader from "@/components/ui/SectionHeader";
+import Input from "@/components/ui/Input";
+import Select from "@/components/ui/Select";
+import Tag from "@/components/ui/Tag";
+import Badge from "@/components/ui/Badge";
+import { buttonStyles } from "@/components/ui/Button";
 
 const unique = <T,>(items: T[]) => Array.from(new Set(items));
 
@@ -49,137 +56,162 @@ export default function LibraryPage() {
     });
   }, [search, practice, task, model, difficulty]);
 
+  const filtersActive =
+    search.trim() ||
+    practice !== "All" ||
+    task !== "All" ||
+    model !== "All" ||
+    difficulty !== "All";
+
+  const handleReset = () => {
+    setSearch("");
+    setPractice("All");
+    setTask("All");
+    setModel("All");
+    setDifficulty("All");
+  };
+
   return (
     <div className="space-y-10">
-      <section className="card p-8">
-        <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-brass-200">Template Library</p>
-            <h1 className="mt-3 font-display text-4xl text-ink-50">
-              Ready-to-ship legal prompts built for real workflows.
-            </h1>
-            <p className="mt-4 text-ink-200">
-              Browse, filter, and copy proven prompts across litigation, contracts, research, client
-              comms, and compliance. Every template includes warnings, variables, and example outputs.
-            </p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <p className="text-xs uppercase tracking-[0.3em] text-ink-200">Library Snapshot</p>
-            <div className="mt-4 grid grid-cols-2 gap-4 text-sm text-ink-100">
-              <div>
-                <p className="text-2xl font-display text-brass-200">{templates.length}</p>
-                <p>Total templates</p>
-              </div>
-              <div>
-                <p className="text-2xl font-display text-brass-200">{practiceCount}</p>
-                <p>Practice areas</p>
-              </div>
-              <div>
-                <p className="text-2xl font-display text-brass-200">{taskCount}</p>
-                <p>Task types</p>
-              </div>
-              <div>
-                <p className="text-2xl font-display text-brass-200">100</p>
-                <p>Quality rubric</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="grid gap-4 rounded-2xl border border-white/10 bg-white/5 p-6 lg:grid-cols-5">
-        <input
-          className="col-span-2 rounded-xl border border-white/10 bg-ink-800/60 px-4 py-3 text-sm text-ink-50 placeholder:text-ink-400"
-          placeholder="Search templates, tags, keywords"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
+      <Card variant="raised" className="p-10">
+        <SectionHeader
+          eyebrow="Template Library"
+          title="Ready-to-ship legal prompts for every matter type."
+          description="Browse, filter, and copy proven prompts across litigation, contracts, research, client communications, and compliance. Every template includes variables, warnings, and example outputs."
+          meta={
+            <>
+              <Badge tone="accent">{templates.length} templates</Badge>
+              <Badge tone="neutral">{practiceCount} practice areas</Badge>
+              <Badge tone="neutral">{taskCount} task types</Badge>
+            </>
+          }
         />
-        <select
-          className="rounded-xl border border-white/10 bg-ink-800/60 px-3 py-3 text-sm text-ink-50"
-          value={practice}
-          onChange={(event) => setPractice(event.target.value as PracticeArea | "All")}
-        >
-          {practiceOptions.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
+        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          {[
+            { label: "Quality rubric", value: "100" },
+            { label: "Coverage", value: "Litigation · Contracts · Compliance" },
+            { label: "Avg. completion", value: "8-15 min" }
+          ].map((item) => (
+            <div key={item.label} className="rounded-2xl border border-base-200/10 bg-base-900/60 p-4">
+              <p className="text-xs uppercase tracking-[0.3em] text-base-300">{item.label}</p>
+              <p className="mt-3 text-sm text-base-100">{item.value}</p>
+            </div>
           ))}
-        </select>
-        <select
-          className="rounded-xl border border-white/10 bg-ink-800/60 px-3 py-3 text-sm text-ink-50"
-          value={task}
-          onChange={(event) => setTask(event.target.value as TaskType | "All")}
-        >
-          {taskOptions.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
-        <select
-          className="rounded-xl border border-white/10 bg-ink-800/60 px-3 py-3 text-sm text-ink-50"
-          value={difficulty}
-          onChange={(event) => setDifficulty(event.target.value as Difficulty | "All")}
-        >
-          {difficultyOptions.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
-        <select
-          className="rounded-xl border border-white/10 bg-ink-800/60 px-3 py-3 text-sm text-ink-50"
-          value={model}
-          onChange={(event) => setModel(event.target.value as ModelCompatibility | "All")}
-        >
-          {modelOptions.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
-      </section>
+        </div>
+      </Card>
 
-      <section className="grid gap-6 md:grid-cols-2">
-        {filtered.map((template) => {
-          const score = scorePrompt(template.prompt, template.variables);
-          return (
-            <Link
-              key={template.id}
-              href={`/templates/${template.id}`}
-              className="card flex h-full flex-col gap-4 p-6 transition hover:border-brass-200/60"
+      <div className="sticky top-24 z-20">
+        <Card className="p-4 shadow-soft">
+          <div className="grid gap-4 lg:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))]">
+            <Input
+              placeholder="Search templates, tags, keywords"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+            <Select
+              value={practice}
+              onChange={(event) => setPractice(event.target.value as PracticeArea | "All")}
             >
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="text-xl font-display text-ink-50">{template.name}</h3>
-                  <p className="mt-2 text-sm text-ink-200">{template.description}</p>
+              {practiceOptions.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </Select>
+            <Select value={task} onChange={(event) => setTask(event.target.value as TaskType | "All")}>
+              {taskOptions.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </Select>
+            <Select
+              value={difficulty}
+              onChange={(event) => setDifficulty(event.target.value as Difficulty | "All")}
+            >
+              {difficultyOptions.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </Select>
+            <Select
+              value={model}
+              onChange={(event) => setModel(event.target.value as ModelCompatibility | "All")}
+            >
+              {modelOptions.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-base-300">
+            <div>
+              {filtered.length} results · Updated for legal workflows
+              {filtersActive ? " · Filters active" : ""}
+            </div>
+            {filtersActive ? (
+              <button className={buttonStyles({ variant: "ghost", size: "sm" })} onClick={handleReset}>
+                Reset filters
+              </button>
+            ) : null}
+          </div>
+        </Card>
+      </div>
+
+      {filtered.length === 0 ? (
+        <Card className="p-10 text-center">
+          <h3 className="text-xl text-base-50">No templates match your filters.</h3>
+          <p className="mt-3 text-sm text-base-200/90">
+            Try broadening the search terms or clearing filters to view the full catalog.
+          </p>
+          <button className={buttonStyles({ variant: "secondary", size: "md" })} onClick={handleReset}>
+            Clear filters
+          </button>
+        </Card>
+      ) : (
+        <section className="grid gap-6 md:grid-cols-2 animate-stagger">
+          {filtered.map((template) => {
+            const score = scorePrompt(template.prompt, template.variables);
+            return (
+              <Link
+                key={template.id}
+                href={`/templates/${template.id}`}
+                className="group flex h-full flex-col gap-4 rounded-3xl border border-base-200/10 bg-base-900/60 p-6 transition hover:border-accent-400/50 hover:bg-base-900/80"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-xl text-base-50 group-hover:text-accent-100">
+                      {template.name}
+                    </h3>
+                    <p className="mt-2 text-sm text-base-200/90">{template.description}</p>
+                  </div>
+                  <Tag tone="accent">{template.practiceArea}</Tag>
                 </div>
-                <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs text-ink-50">
-                  {template.practiceArea}
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <span className="tag">{template.taskType}</span>
-                <span className="tag">{template.difficulty}</span>
-                <span className="tag">{template.estimatedTime}</span>
-                <span className="tag">{template.modelCompatibility.join(", ")}</span>
-              </div>
-              <div className="mt-auto rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-ink-200">
-                  <span>Quality</span>
-                  <span className="text-ink-50">{score.total}</span>
+                <div className="flex flex-wrap gap-2">
+                  <Tag tone="muted">{template.taskType}</Tag>
+                  <Tag tone="muted">{template.difficulty}</Tag>
+                  <Tag tone="muted">{template.estimatedTime}</Tag>
+                  <Tag tone="teal">{template.modelCompatibility.join(", ")}</Tag>
                 </div>
-                <div className="mt-2 h-2 rounded-full bg-white/10">
-                  <div
-                    className="h-2 rounded-full bg-brass-400/80"
-                    style={{ width: `${score.total}%` }}
-                  />
+                <div className="mt-auto rounded-2xl border border-base-200/10 bg-base-950/40 px-4 py-3">
+                  <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-base-300">
+                    <span>Quality score</span>
+                    <span className="text-base-50">{score.total}</span>
+                  </div>
+                  <div className="mt-2 h-2 rounded-full bg-base-200/10">
+                    <div
+                      className="h-2 rounded-full bg-accent-400/90"
+                      style={{ width: `${score.total}%` }}
+                    />
+                  </div>
                 </div>
-              </div>
-            </Link>
-          );
-        })}
-      </section>
+              </Link>
+            );
+          })}
+        </section>
+      )}
     </div>
   );
 }

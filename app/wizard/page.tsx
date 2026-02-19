@@ -4,6 +4,12 @@ import { useMemo, useState } from "react";
 import ScoreMeter from "@/components/ScoreMeter";
 import { scorePrompt } from "@/lib/quality";
 import { createBlankTemplate, loadTemplates, saveTemplates } from "@/lib/storage";
+import Card from "@/components/ui/Card";
+import SectionHeader from "@/components/ui/SectionHeader";
+import Textarea from "@/components/ui/Textarea";
+import Button from "@/components/ui/Button";
+import Badge from "@/components/ui/Badge";
+import Tag from "@/components/ui/Tag";
 
 const steps = [
   "Goal",
@@ -44,6 +50,9 @@ export default function WizardPage() {
   }, [goal, audience, jurisdiction, constraints]);
 
   const score = scorePrompt(prompt, variables);
+  const progress = Math.round(((currentStep + 1) / steps.length) * 100);
+
+  const confidence = score.total >= 85 ? "High" : score.total >= 70 ? "Medium" : "Low";
 
   const handleSave = () => {
     const existing = loadTemplates();
@@ -66,131 +75,163 @@ export default function WizardPage() {
     setTimeout(() => setSaved(false), 1500);
   };
 
+  const stepContent = [
+    {
+      label: "Define the legal task and desired outcome.",
+      value: goal,
+      onChange: (value: string) => setGoal(value)
+    },
+    {
+      label: "Who will use or read this output?",
+      value: audience,
+      onChange: (value: string) => setAudience(value)
+    },
+    {
+      label: "Jurisdiction, forum, or governing law.",
+      value: jurisdiction,
+      onChange: (value: string) => setJurisdiction(value)
+    },
+    {
+      label: "Constraints, deadlines, assumptions, or exclusions.",
+      value: constraints,
+      onChange: (value: string) => setConstraints(value)
+    },
+    {
+      label: "Tone guidance.",
+      value: tone,
+      onChange: (value: string) => setTone(value)
+    },
+    {
+      label: "How should citations be handled?",
+      value: citations,
+      onChange: (value: string) => setCitations(value)
+    },
+    {
+      label: "Desired output structure.",
+      value: outputFormat,
+      onChange: (value: string) => setOutputFormat(value)
+    },
+    {
+      label: "Safety checks and escalation guidance.",
+      value: safeguards,
+      onChange: (value: string) => setSafeguards(value)
+    }
+  ][currentStep];
+
   return (
     <div className="space-y-8">
-      <section className="card p-8">
-        <p className="text-sm uppercase tracking-[0.3em] text-brass-200">Template Wizard</p>
-        <h1 className="mt-3 font-display text-4xl text-ink-50">Build a prompt step-by-step.</h1>
-        <p className="mt-3 max-w-2xl text-ink-200">
-          Follow best-practice guardrails to generate production-ready prompts. Every step improves
-          clarity, context, and safeguards.
-        </p>
-      </section>
+      <Card variant="raised" className="p-10">
+        <SectionHeader
+          eyebrow="Template Wizard"
+          title="Build a prompt step by step."
+          description="Follow best-practice guardrails to generate production-ready prompts. Each step improves clarity, context, and safeguards."
+          meta={
+            <>
+              <Badge tone="accent">Guided flow</Badge>
+              <Badge tone="neutral">8 steps</Badge>
+              <Badge tone="neutral">Quality scored</Badge>
+            </>
+          }
+        />
+      </Card>
 
       <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="card p-6">
-          <div className="flex items-center justify-between">
-            <p className="text-xs uppercase tracking-[0.3em] text-ink-200">Step {currentStep + 1}</p>
-            <p className="text-sm text-ink-100">{steps[currentStep]}</p>
+        <Card variant="raised" className="p-6">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-base-300">Step {currentStep + 1}</p>
+              <h2 className="mt-2 text-2xl text-base-50">{steps[currentStep]}</h2>
+            </div>
+            <div className="flex items-center gap-3">
+              <Tag tone="accent">{progress}% complete</Tag>
+              <Badge tone={confidence === "High" ? "success" : confidence === "Medium" ? "warning" : "danger"}>
+                Confidence: {confidence}
+              </Badge>
+            </div>
           </div>
-          <div className="mt-6 space-y-4">
-            {currentStep === 0 && (
-              <textarea
-                className="h-32 w-full rounded-xl border border-white/10 bg-ink-800/60 p-4 text-sm text-ink-50"
-                placeholder="Define the legal task and desired outcome."
-                value={goal}
-                onChange={(event) => setGoal(event.target.value)}
-              />
-            )}
-            {currentStep === 1 && (
-              <textarea
-                className="h-32 w-full rounded-xl border border-white/10 bg-ink-800/60 p-4 text-sm text-ink-50"
-                placeholder="Who will use or read this output?"
-                value={audience}
-                onChange={(event) => setAudience(event.target.value)}
-              />
-            )}
-            {currentStep === 2 && (
-              <textarea
-                className="h-32 w-full rounded-xl border border-white/10 bg-ink-800/60 p-4 text-sm text-ink-50"
-                placeholder="Jurisdiction, forum, or governing law."
-                value={jurisdiction}
-                onChange={(event) => setJurisdiction(event.target.value)}
-              />
-            )}
-            {currentStep === 3 && (
-              <textarea
-                className="h-32 w-full rounded-xl border border-white/10 bg-ink-800/60 p-4 text-sm text-ink-50"
-                placeholder="Constraints, deadlines, assumptions, or exclusions."
-                value={constraints}
-                onChange={(event) => setConstraints(event.target.value)}
-              />
-            )}
-            {currentStep === 4 && (
-              <textarea
-                className="h-32 w-full rounded-xl border border-white/10 bg-ink-800/60 p-4 text-sm text-ink-50"
-                placeholder="Tone guidance."
-                value={tone}
-                onChange={(event) => setTone(event.target.value)}
-              />
-            )}
-            {currentStep === 5 && (
-              <textarea
-                className="h-32 w-full rounded-xl border border-white/10 bg-ink-800/60 p-4 text-sm text-ink-50"
-                placeholder="How should citations be handled?"
-                value={citations}
-                onChange={(event) => setCitations(event.target.value)}
-              />
-            )}
-            {currentStep === 6 && (
-              <textarea
-                className="h-32 w-full rounded-xl border border-white/10 bg-ink-800/60 p-4 text-sm text-ink-50"
-                placeholder="Desired output structure."
-                value={outputFormat}
-                onChange={(event) => setOutputFormat(event.target.value)}
-              />
-            )}
-            {currentStep === 7 && (
-              <textarea
-                className="h-32 w-full rounded-xl border border-white/10 bg-ink-800/60 p-4 text-sm text-ink-50"
-                placeholder="Safety checks and escalation guidance."
-                value={safeguards}
-                onChange={(event) => setSafeguards(event.target.value)}
-              />
-            )}
+          <div className="mt-6">
+            <div className="flex items-center justify-between text-xs text-base-300">
+              <span>Progress</span>
+              <span>{currentStep + 1} of {steps.length}</span>
+            </div>
+            <div className="mt-2 h-2 rounded-full bg-base-200/10">
+              <div className="h-2 rounded-full bg-accent-400/90" style={{ width: `${progress}%` }} />
+            </div>
           </div>
+
+          <div className="mt-6 animate-fade-in">
+            <label className="text-xs uppercase tracking-[0.3em] text-base-300">Guidance</label>
+            <p className="mt-2 text-sm text-base-200/90">{stepContent.label}</p>
+            <Textarea
+              className="mt-4 h-36"
+              placeholder={stepContent.label}
+              value={stepContent.value}
+              onChange={(event) => stepContent.onChange(event.target.value)}
+            />
+          </div>
+
           <div className="mt-6 flex items-center justify-between">
-            <button
-              className="rounded-xl border border-white/20 px-4 py-2 text-sm text-ink-50 transition hover:border-brass-200/70"
+            <Button
+              variant="outline"
+              size="md"
               onClick={() => setCurrentStep((step) => Math.max(0, step - 1))}
               disabled={currentStep === 0}
             >
               Previous
-            </button>
-            <button
-              className="rounded-xl border border-brass-300/70 bg-brass-400/80 px-5 py-2 text-sm text-ink-900 transition hover:bg-brass-300"
+            </Button>
+            <Button
+              variant="primary"
+              size="md"
               onClick={() => setCurrentStep((step) => Math.min(steps.length - 1, step + 1))}
               disabled={currentStep === steps.length - 1}
             >
               Next
-            </button>
+            </Button>
           </div>
-        </div>
+        </Card>
 
         <div className="space-y-6">
-          <ScoreMeter score={score} />
-          <div className="card p-5">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm uppercase tracking-[0.2em] text-ink-200">Prompt Preview</h3>
-              <button
-                className="rounded-xl border border-white/20 px-4 py-2 text-xs text-ink-50 transition hover:border-brass-200/70"
-                onClick={handleSave}
-              >
-                {saved ? "Saved" : "Save to My Templates"}
-              </button>
+          <Card className="p-6">
+            <p className="text-xs uppercase tracking-[0.3em] text-base-300">Step Summary</p>
+            <div className="mt-4 space-y-3 text-sm text-base-200">
+              {[
+                { label: "Goal", value: goal },
+                { label: "Audience", value: audience },
+                { label: "Jurisdiction", value: jurisdiction },
+                { label: "Constraints", value: constraints }
+              ].map((item) => (
+                <div key={item.label} className="flex items-start justify-between gap-3">
+                  <span className="text-base-300">{item.label}</span>
+                  <span className="text-right text-base-100">
+                    {item.value ? item.value.slice(0, 60) : "Not set"}
+                  </span>
+                </div>
+              ))}
             </div>
-            <pre className="mt-4 whitespace-pre-wrap rounded-2xl border border-white/10 bg-ink-800/70 p-4 text-xs text-ink-50">
+          </Card>
+
+          <ScoreMeter score={score} />
+
+          <Card className="p-6">
+            <div className="flex items-center justify-between">
+              <p className="text-xs uppercase tracking-[0.3em] text-base-300">Prompt Preview</p>
+              <Button variant="secondary" size="sm" onClick={handleSave}>
+                {saved ? "Saved" : "Save to My Templates"}
+              </Button>
+            </div>
+            <pre className="mt-4 max-h-[320px] overflow-auto whitespace-pre-wrap rounded-2xl border border-base-200/10 bg-base-950/60 p-4 text-xs text-base-100">
               {prompt}
             </pre>
-          </div>
-          <div className="card p-5">
-            <h3 className="text-sm uppercase tracking-[0.2em] text-brass-200">Best Practices</h3>
-            <ul className="mt-4 space-y-2 text-sm text-ink-200">
+          </Card>
+
+          <Card className="p-6">
+            <p className="text-xs uppercase tracking-[0.3em] text-base-300">Best Practices</p>
+            <ul className="mt-4 space-y-2 text-sm text-base-200">
               <li>• Include jurisdiction, role, and audience.</li>
               <li>• Provide output format and citation placeholders.</li>
               <li>• Add safeguards and highlight missing facts.</li>
             </ul>
-          </div>
+          </Card>
         </div>
       </section>
     </div>

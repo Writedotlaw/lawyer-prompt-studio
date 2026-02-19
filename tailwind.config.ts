@@ -9,54 +9,75 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        display: ["'Playfair Display'", "serif"],
-        body: ["'Source Sans 3'", "sans-serif"]
+        display: ["'Fraunces'", "serif"],
+        body: ["'Sora'", "sans-serif"]
       },
       colors: {
-        ink: {
-          50: "#f6f4f1",
-          100: "#ece6dd",
-          200: "#d9cec0",
-          300: "#c2b29f",
-          400: "#a6917a",
-          500: "#8c765f",
-          600: "#735e4c",
-          700: "#5e4c3d",
-          800: "#47392e",
-          900: "#2e241d"
+        base: {
+          50: "rgb(var(--color-base-50) / <alpha-value>)",
+          100: "rgb(var(--color-base-100) / <alpha-value>)",
+          200: "rgb(var(--color-base-200) / <alpha-value>)",
+          300: "rgb(var(--color-base-300) / <alpha-value>)",
+          400: "rgb(var(--color-base-400) / <alpha-value>)",
+          500: "rgb(var(--color-base-500) / <alpha-value>)",
+          600: "rgb(var(--color-base-600) / <alpha-value>)",
+          700: "rgb(var(--color-base-700) / <alpha-value>)",
+          800: "rgb(var(--color-base-800) / <alpha-value>)",
+          900: "rgb(var(--color-base-900) / <alpha-value>)",
+          950: "rgb(var(--color-base-950) / <alpha-value>)"
         },
-        brass: {
-          50: "#fff8e6",
-          100: "#fdeec0",
-          200: "#f6d98c",
-          300: "#e9bf56",
-          400: "#d9a232",
-          500: "#c1831f",
-          600: "#9c6519",
-          700: "#7b4c16",
-          800: "#5b3813",
-          900: "#3c240f"
+        accent: {
+          50: "rgb(var(--color-accent-50) / <alpha-value>)",
+          100: "rgb(var(--color-accent-100) / <alpha-value>)",
+          200: "rgb(var(--color-accent-200) / <alpha-value>)",
+          300: "rgb(var(--color-accent-300) / <alpha-value>)",
+          400: "rgb(var(--color-accent-400) / <alpha-value>)",
+          500: "rgb(var(--color-accent-500) / <alpha-value>)",
+          600: "rgb(var(--color-accent-600) / <alpha-value>)",
+          700: "rgb(var(--color-accent-700) / <alpha-value>)",
+          800: "rgb(var(--color-accent-800) / <alpha-value>)"
         },
-        slateblue: {
-          50: "#eef1f7",
-          100: "#d8deee",
-          200: "#b6c2de",
-          300: "#91a2ca",
-          400: "#6e83b4",
-          500: "#54679c",
-          600: "#3f4d79",
-          700: "#2f3b5e",
-          800: "#212a43",
-          900: "#141a2b"
-        }
+        teal: {
+          50: "rgb(var(--color-teal-50) / <alpha-value>)",
+          100: "rgb(var(--color-teal-100) / <alpha-value>)",
+          200: "rgb(var(--color-teal-200) / <alpha-value>)",
+          300: "rgb(var(--color-teal-300) / <alpha-value>)",
+          400: "rgb(var(--color-teal-400) / <alpha-value>)",
+          500: "rgb(var(--color-teal-500) / <alpha-value>)",
+          600: "rgb(var(--color-teal-600) / <alpha-value>)",
+          700: "rgb(var(--color-teal-700) / <alpha-value>)"
+        },
+        surface: {
+          1: "rgb(var(--color-surface-1) / <alpha-value>)",
+          2: "rgb(var(--color-surface-2) / <alpha-value>)",
+          3: "rgb(var(--color-surface-3) / <alpha-value>)",
+          4: "rgb(var(--color-surface-4) / <alpha-value>)"
+        },
+        success: "rgb(var(--color-success) / <alpha-value>)",
+        warning: "rgb(var(--color-warning) / <alpha-value>)",
+        danger: "rgb(var(--color-danger) / <alpha-value>)",
+        border: "rgb(var(--color-border) / <alpha-value>)"
+      },
+      borderRadius: {
+        sm: "var(--radius-sm)",
+        md: "var(--radius-md)",
+        lg: "var(--radius-lg)",
+        xl: "var(--radius-xl)",
+        "2xl": "var(--radius-2xl)",
+        "3xl": "var(--radius-3xl)"
       },
       boxShadow: {
-        card: "0 20px 60px -30px rgba(33,42,67,0.45)",
-        soft: "0 10px 40px -20px rgba(46,36,29,0.35)"
+        card: "var(--shadow-card)",
+        lift: "var(--shadow-lift)",
+        glow: "var(--shadow-glow)"
       },
       backgroundImage: {
-        "hero-radial": "radial-gradient(circle at top, rgba(84,103,156,0.45), transparent 60%)",
-        "grid-faint": "linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)"
+        "hero-radial":
+          "radial-gradient(circle at top, rgba(35, 70, 104, 0.45), rgba(10, 12, 24, 0) 60%)",
+        "mesh":
+          "radial-gradient(circle at 20% 20%, rgba(255, 199, 115, 0.18), transparent 55%), radial-gradient(circle at 80% 0%, rgba(75, 188, 193, 0.2), transparent 45%)",
+        "grid-faint":
+          "linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)"
       }
     }
   },

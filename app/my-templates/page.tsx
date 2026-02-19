@@ -12,12 +12,36 @@ import {
 import { CustomTemplate } from "@/lib/types";
 import { scorePrompt } from "@/lib/quality";
 import ScoreMeter from "@/components/ScoreMeter";
+import Card from "@/components/ui/Card";
+import SectionHeader from "@/components/ui/SectionHeader";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import Textarea from "@/components/ui/Textarea";
+import Select from "@/components/ui/Select";
+import Tag from "@/components/ui/Tag";
+import Badge from "@/components/ui/Badge";
+
+const sortTemplates = (templates: CustomTemplate[], sortBy: string) => {
+  const next = [...templates];
+  if (sortBy === "updated") {
+    return next.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  }
+  if (sortBy === "created") {
+    return next.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  }
+  if (sortBy === "name") {
+    return next.sort((a, b) => a.name.localeCompare(b.name));
+  }
+  return next;
+};
 
 export default function MyTemplatesPage() {
   const [templates, setTemplates] = useState<CustomTemplate[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [importText, setImportText] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState("updated");
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
     const stored = loadTemplates();
@@ -33,6 +57,14 @@ export default function MyTemplatesPage() {
     () => templates.find((item) => item.id === selectedId) ?? null,
     [templates, selectedId]
   );
+
+  const filteredTemplates = useMemo(() => {
+    const list = sortTemplates(templates, sortBy);
+    if (!filter.trim()) return list;
+    return list.filter((template) =>
+      [template.name, template.tags.join(" ")].join(" ").toLowerCase().includes(filter.toLowerCase())
+    );
+  }, [templates, sortBy, filter]);
 
   const updateSelected = (updates: Partial<CustomTemplate>) => {
     if (!selected) return;
@@ -92,114 +124,119 @@ export default function MyTemplatesPage() {
 
   return (
     <div className="space-y-8">
-      <section className="card p-8">
-        <p className="text-sm uppercase tracking-[0.3em] text-brass-200">My Templates</p>
-        <h1 className="mt-3 font-display text-4xl text-ink-50">Manage custom prompts.</h1>
-        <p className="mt-3 max-w-2xl text-ink-200">
-          Save drafts, duplicate them, and export to JSON or Markdown. Everything is stored locally in
-          your browser.
-        </p>
-      </section>
+      <Card variant="raised" className="p-10">
+        <SectionHeader
+          eyebrow="My Templates"
+          title="Manage custom prompts."
+          description="Save drafts, duplicate them, and export to JSON or Markdown. Everything is stored locally in your browser."
+          meta={
+            <>
+              <Badge tone="accent">Local storage</Badge>
+              <Badge tone="neutral">Versioned</Badge>
+              <Badge tone="neutral">Export-ready</Badge>
+            </>
+          }
+        />
+      </Card>
 
       <section className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
         <div className="space-y-4">
-          <div className="card p-4">
-            <div className="flex flex-wrap gap-3">
-              <button
-                className="rounded-xl border border-brass-300/70 bg-brass-400/80 px-4 py-2 text-sm text-ink-900 transition hover:bg-brass-300"
-                onClick={handleCreate}
-              >
+          <Card className="p-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <Button variant="primary" size="md" onClick={handleCreate}>
                 New Template
-              </button>
-              <button
-                className="rounded-xl border border-white/20 px-4 py-2 text-sm text-ink-50 transition hover:border-brass-200/70"
-                onClick={handleDuplicate}
-                disabled={!selected}
-              >
+              </Button>
+              <Button variant="secondary" size="md" onClick={handleDuplicate} disabled={!selected}>
                 Duplicate
-              </button>
-              <button
-                className="rounded-xl border border-white/20 px-4 py-2 text-sm text-ink-50 transition hover:border-brass-200/70"
-                onClick={handleDelete}
-                disabled={!selected}
-              >
+              </Button>
+              <Button variant="danger" size="md" onClick={handleDelete} disabled={!selected}>
                 Delete
-              </button>
+              </Button>
             </div>
-          </div>
-          <div className="card max-h-[420px] overflow-auto p-4">
-            <p className="text-xs uppercase tracking-[0.3em] text-ink-200">Saved</p>
-            <div className="mt-4 space-y-3">
-              {templates.length === 0 && (
-                <p className="text-sm text-ink-300">No templates saved yet.</p>
+          </Card>
+
+          <Card className="p-4">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-xs uppercase tracking-[0.3em] text-base-300">Saved</p>
+              <Tag tone="muted">{templates.length} total</Tag>
+            </div>
+            <div className="mt-4 grid gap-3">
+              <Input
+                placeholder="Filter by name or tag"
+                value={filter}
+                onChange={(event) => setFilter(event.target.value)}
+              />
+              <Select value={sortBy} onChange={(event) => setSortBy(event.target.value)}>
+                <option value="updated">Sort by updated</option>
+                <option value="created">Sort by created</option>
+                <option value="name">Sort by name</option>
+              </Select>
+            </div>
+            <div className="mt-4 max-h-[420px] space-y-3 overflow-auto">
+              {filteredTemplates.length === 0 && (
+                <div className="rounded-2xl border border-base-200/10 bg-base-900/60 p-4 text-sm text-base-200">
+                  No templates yet. Create your first prompt or import JSON to get started.
+                </div>
               )}
-              {templates.map((template) => (
+              {filteredTemplates.map((template) => (
                 <button
                   key={template.id}
                   onClick={() => setSelectedId(template.id)}
-                  className={`w-full rounded-xl border px-4 py-3 text-left text-sm transition ${
+                  className={`w-full rounded-2xl border px-4 py-3 text-left text-sm transition ${
                     selectedId === template.id
-                      ? "border-brass-200/70 bg-white/10"
-                      : "border-white/10 bg-white/5 hover:border-brass-200/40"
+                      ? "border-accent-400/60 bg-accent-500/10"
+                      : "border-base-200/10 bg-base-900/60 hover:border-accent-400/40"
                   }`}
                 >
-                  <p className="text-ink-50">{template.name}</p>
-                  <p className="text-xs text-ink-300">Updated {template.updatedAt.slice(0, 10)}</p>
+                  <p className="text-base-50">{template.name}</p>
+                  <p className="text-xs text-base-300">Updated {template.updatedAt.slice(0, 10)}</p>
                 </button>
               ))}
             </div>
-          </div>
-          <div className="card p-4">
-            <p className="text-xs uppercase tracking-[0.3em] text-ink-200">Import JSON</p>
-            <textarea
-              className="mt-3 h-28 w-full rounded-xl border border-white/10 bg-ink-800/60 p-3 text-xs text-ink-50"
+          </Card>
+
+          <Card className="p-4">
+            <p className="text-xs uppercase tracking-[0.3em] text-base-300">Import JSON</p>
+            <Textarea
+              className="mt-3 h-28"
               placeholder="Paste exported JSON here"
               value={importText}
               onChange={(event) => setImportText(event.target.value)}
             />
-            <button
-              className="mt-3 rounded-xl border border-white/20 px-4 py-2 text-xs text-ink-50 transition hover:border-brass-200/70"
-              onClick={handleImport}
-            >
+            <Button variant="secondary" size="sm" onClick={handleImport} className="mt-3">
               Import
-            </button>
-          </div>
+            </Button>
+          </Card>
         </div>
 
         <div className="space-y-6">
           {selected ? (
-            <div className="card p-6">
+            <Card variant="raised" className="p-6">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <input
-                  className="w-full rounded-xl border border-white/10 bg-ink-800/60 px-4 py-2 text-base text-ink-50"
+                <Input
+                  className="text-base"
                   value={selected.name}
                   onChange={(event) => updateSelected({ name: event.target.value })}
                 />
                 <div className="flex flex-wrap gap-2">
-                  <button
-                    className="rounded-xl border border-white/20 px-4 py-2 text-xs text-ink-50 transition hover:border-brass-200/70"
-                    onClick={() => handleExport("json")}
-                  >
+                  <Button variant="outline" size="sm" onClick={() => handleExport("json")}>
                     {copied === "json" ? "Copied" : "Export JSON"}
-                  </button>
-                  <button
-                    className="rounded-xl border border-white/20 px-4 py-2 text-xs text-ink-50 transition hover:border-brass-200/70"
-                    onClick={() => handleExport("md")}
-                  >
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => handleExport("md")}>
                     {copied === "md" ? "Copied" : "Export Markdown"}
-                  </button>
+                  </Button>
                 </div>
               </div>
-              <textarea
-                className="mt-4 h-64 w-full rounded-2xl border border-white/10 bg-ink-800/60 p-4 text-sm text-ink-50"
+              <Textarea
+                className="mt-4 h-64"
                 placeholder="Write your prompt here"
                 value={selected.prompt}
                 onChange={(event) => updateSelected({ prompt: event.target.value })}
               />
               <div className="mt-4">
-                <label className="text-xs uppercase tracking-[0.3em] text-ink-200">Tags</label>
-                <input
-                  className="mt-2 w-full rounded-xl border border-white/10 bg-ink-800/60 px-4 py-2 text-sm text-ink-50"
+                <label className="text-xs uppercase tracking-[0.3em] text-base-300">Tags</label>
+                <Input
+                  className="mt-2"
                   placeholder="Comma-separated tags"
                   value={selected.tags.join(", ")}
                   onChange={(event) =>
@@ -212,11 +249,14 @@ export default function MyTemplatesPage() {
                   }
                 />
               </div>
-            </div>
+            </Card>
           ) : (
-            <div className="card p-6">
-              <p className="text-ink-200">Select a template to edit or create a new one.</p>
-            </div>
+            <Card className="p-6">
+              <p className="text-base-200">Select a template to edit or create a new one.</p>
+              <Button variant="primary" size="md" className="mt-4" onClick={handleCreate}>
+                Create a template
+              </Button>
+            </Card>
           )}
 
           {score && <ScoreMeter score={score} />}
