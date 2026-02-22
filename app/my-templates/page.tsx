@@ -10,8 +10,6 @@ import {
   saveTemplates
 } from "@/lib/storage";
 import { CustomTemplate } from "@/lib/types";
-import { scorePrompt } from "@/lib/quality";
-import ScoreMeter from "@/components/ScoreMeter";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Button from "@/components/ui/Button";
@@ -120,15 +118,13 @@ export default function MyTemplatesPage() {
     setImportText("");
   };
 
-  const score = selected ? scorePrompt(selected.prompt, selected.tags) : null;
-
   return (
     <div className="space-y-8">
       <Card variant="raised" className="p-10">
         <SectionHeader
-          eyebrow="My Templates"
+          eyebrow="Saved Prompts"
           title="Manage custom prompts."
-          description="Save drafts, duplicate them, and export to JSON or Markdown. Everything is stored locally in your browser."
+          description="Save presets, duplicate them, and export to JSON or Markdown. Everything is stored locally in your browser."
           meta={
             <>
               <Badge tone="accent">Local storage</Badge>
@@ -144,20 +140,20 @@ export default function MyTemplatesPage() {
           <Card className="p-4">
             <div className="flex flex-wrap items-center gap-3">
               <Button variant="primary" size="md" onClick={handleCreate}>
-                New Template
+                New Preset
               </Button>
               <Button variant="secondary" size="md" onClick={handleDuplicate} disabled={!selected}>
-                Duplicate
+                Duplicate Preset
               </Button>
               <Button variant="danger" size="md" onClick={handleDelete} disabled={!selected}>
-                Delete
+                Delete Preset
               </Button>
             </div>
           </Card>
 
           <Card className="p-4">
             <div className="flex items-center justify-between gap-3">
-              <p className="text-xs uppercase tracking-[0.3em] text-base-300">Saved</p>
+              <p className="text-xs uppercase tracking-[0.3em] text-base-300">Saved Prompts</p>
               <Tag tone="muted">{templates.length} total</Tag>
             </div>
             <div className="mt-4 grid gap-3">
@@ -175,7 +171,7 @@ export default function MyTemplatesPage() {
             <div className="mt-4 max-h-[420px] space-y-3 overflow-auto">
               {filteredTemplates.length === 0 && (
                 <div className="rounded-2xl border border-base-200/10 bg-base-900/60 p-4 text-sm text-base-200">
-                  No templates yet. Create your first prompt or import JSON to get started.
+                  No saved prompts yet. Create your first preset or import JSON to get started.
                 </div>
               )}
               {filteredTemplates.map((template) => (
@@ -252,14 +248,13 @@ export default function MyTemplatesPage() {
             </Card>
           ) : (
             <Card className="p-6">
-              <p className="text-base-200">Select a template to edit or create a new one.</p>
+              <p className="text-base-200">Select a saved prompt to edit or create a new one.</p>
               <Button variant="primary" size="md" className="mt-4" onClick={handleCreate}>
-                Create a template
+                Create a preset
               </Button>
             </Card>
           )}
 
-          {score && <ScoreMeter score={score} />}
         </div>
       </section>
     </div>

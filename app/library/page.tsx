@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { templates } from "@/lib/templates";
 import { Difficulty, ModelCompatibility, PracticeArea, TaskType } from "@/lib/types";
-import { scorePrompt } from "@/lib/quality";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Input from "@/components/ui/Input";
@@ -75,12 +74,12 @@ export default function LibraryPage() {
     <div className="space-y-10">
       <Card variant="raised" className="p-10">
         <SectionHeader
-          eyebrow="Template Library"
+          eyebrow="Prompt Library"
           title="Ready-to-ship legal prompts for every matter type."
           description="Browse, filter, and copy proven prompts across litigation, contracts, research, client communications, and compliance. Every template includes variables, warnings, and example outputs."
           meta={
             <>
-              <Badge tone="accent">{templates.length} templates</Badge>
+              <Badge tone="accent">{templates.length} prompts</Badge>
               <Badge tone="neutral">{practiceCount} practice areas</Badge>
               <Badge tone="neutral">{taskCount} task types</Badge>
             </>
@@ -88,9 +87,9 @@ export default function LibraryPage() {
         />
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           {[
-            { label: "Quality rubric", value: "100" },
+            { label: "Prompt depth", value: "Advanced legal workflows" },
             { label: "Coverage", value: "Litigation · Contracts · Compliance" },
-            { label: "Avg. completion", value: "8-15 min" }
+            { label: "Avg. completion", value: "3-8 min to customize" }
           ].map((item) => (
             <div key={item.label} className="rounded-2xl border border-base-200/10 bg-base-900/60 p-4">
               <p className="text-xs uppercase tracking-[0.3em] text-base-300">{item.label}</p>
@@ -104,7 +103,7 @@ export default function LibraryPage() {
         <Card className="p-4 shadow-soft">
           <div className="grid gap-4 lg:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))]">
             <Input
-              placeholder="Search templates, tags, keywords"
+              placeholder="Search prompts, tags, keywords"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
             />
@@ -162,7 +161,7 @@ export default function LibraryPage() {
 
       {filtered.length === 0 ? (
         <Card className="p-10 text-center">
-          <h3 className="text-xl text-base-50">No templates match your filters.</h3>
+          <h3 className="text-xl text-base-50">No prompts match your filters.</h3>
           <p className="mt-3 text-sm text-base-200/90">
             Try broadening the search terms or clearing filters to view the full catalog.
           </p>
@@ -172,9 +171,7 @@ export default function LibraryPage() {
         </Card>
       ) : (
         <section className="grid gap-6 md:grid-cols-2 animate-stagger">
-          {filtered.map((template) => {
-            const score = scorePrompt(template.prompt, template.variables);
-            return (
+          {filtered.map((template) => (
               <Link
                 key={template.id}
                 href={`/templates/${template.id}`}
@@ -195,21 +192,8 @@ export default function LibraryPage() {
                   <Tag tone="muted">{template.estimatedTime}</Tag>
                   <Tag tone="teal">{template.modelCompatibility.join(", ")}</Tag>
                 </div>
-                <div className="mt-auto rounded-2xl border border-base-200/10 bg-base-950/40 px-4 py-3">
-                  <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-base-300">
-                    <span>Quality score</span>
-                    <span className="text-base-50">{score.total}</span>
-                  </div>
-                  <div className="mt-2 h-2 rounded-full bg-base-200/10">
-                    <div
-                      className="h-2 rounded-full bg-accent-400/90"
-                      style={{ width: `${score.total}%` }}
-                    />
-                  </div>
-                </div>
               </Link>
-            );
-          })}
+          ))}
         </section>
       )}
     </div>

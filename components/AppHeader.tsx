@@ -7,10 +7,10 @@ import { cn } from "@/lib/utils";
 import WriteLawMark from "@/components/WriteLawMark";
 
 const navLinks = [
-  { href: "/", label: "Overview" },
-  { href: "/library", label: "Library" },
-  { href: "/wizard", label: "Wizard" },
-  { href: "/my-templates", label: "My Templates" }
+  { href: "/", label: "Presets" },
+  { href: "/library", label: "Prompt Library" },
+  { href: "/wizard", label: "Prompt Workbench" },
+  { href: "/my-templates", label: "Saved Prompts" }
 ];
 
 export default function AppHeader() {
@@ -39,7 +39,7 @@ export default function AppHeader() {
         <div className="flex items-center gap-3">
           <div className="hidden text-xs text-base-300 sm:block">Write.law-inspired brand pass · Secure by default</div>
           <Link href="/wizard" className={cn(buttonStyles({ variant: "primary" }), "hidden sm:inline-flex")}>
-            Start Wizard
+            Open Workbench
           </Link>
         </div>
       </div>

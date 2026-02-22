@@ -3,8 +3,6 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { templates } from "@/lib/templates";
-import { scorePrompt } from "@/lib/quality";
-import ScoreMeter from "@/components/ScoreMeter";
 import { createBlankTemplate, loadTemplates, saveTemplates } from "@/lib/storage";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -27,8 +25,6 @@ export default function TemplateDetailClient({ id }: { id: string }) {
       </Card>
     );
   }
-
-  const score = scorePrompt(template.prompt, template.variables);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(template.prompt);
@@ -57,23 +53,35 @@ export default function TemplateDetailClient({ id }: { id: string }) {
     setTimeout(() => setSaved(false), 1500);
   };
 
+  const downloadContent = (content: string, filename: string, type = "text/plain;charset=utf-8") => {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const fileBase =
+    template.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "") || "prompt";
+
+  const markdownExport = `# ${template.name}\n\n${template.description}\n\n## Prompt\n\n${template.prompt}\n`;
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-24">
       <Card variant="raised" className="p-10">
         <SectionHeader
-          eyebrow="Template Detail"
+          eyebrow="Prompt Detail"
           title={template.name}
           description={template.description}
           actions={
             <>
-              <Button variant="primary" size="md" onClick={handleCopy}>
-                {copied ? "Copied" : "Copy Prompt"}
-              </Button>
-              <Button variant="secondary" size="md" onClick={handleSave}>
-                {saved ? "Saved" : "Save to My Templates"}
-              </Button>
               <Button variant="ghost" size="md" onClick={() => router.push("/library")}>
-                Back to Library
+                Back to Prompt Library
               </Button>
             </>
           }
@@ -86,6 +94,10 @@ export default function TemplateDetailClient({ id }: { id: string }) {
             </>
           }
         />
+        <div className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-base-200/10 bg-base-900/60 px-4 py-3 text-xs uppercase tracking-[0.3em] text-base-300">
+          <span className="text-base-200">Flow</span>
+          <span className="text-base-50">Customize → Review Final Prompt → Copy/Download</span>
+        </div>
         <div className="mt-6 flex flex-wrap gap-2">
           <Tag tone="teal">Models: {template.modelCompatibility.join(", ")}</Tag>
           {template.tags.map((tag) => (
@@ -128,7 +140,6 @@ export default function TemplateDetailClient({ id }: { id: string }) {
         </div>
 
         <div className="space-y-6">
-          <ScoreMeter score={score} />
           <Card className="p-6">
             <h3 className="text-sm uppercase tracking-[0.3em] text-base-300">Warnings & Disclaimers</h3>
             <div className="mt-4 space-y-4 text-sm text-base-200">
@@ -153,6 +164,34 @@ export default function TemplateDetailClient({ id }: { id: string }) {
           </Card>
         </div>
       </section>
+
+      <div className="sticky bottom-6 z-30">
+        <Card className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-3 px-4 py-3 shadow-soft">
+          <div className="text-sm text-base-200">Actions</div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="primary" size="sm" onClick={handleCopy}>
+              {copied ? "Copied" : "Copy"}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => downloadContent(template.prompt, `${fileBase}.txt`)}
+            >
+              Download TXT
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => downloadContent(markdownExport, `${fileBase}.md`, "text/markdown;charset=utf-8")}
+            >
+              Download MD
+            </Button>
+            <Button variant="secondary" size="sm" onClick={handleSave}>
+              {saved ? "Saved" : "Save Preset"}
+            </Button>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 }

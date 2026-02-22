@@ -1,8 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import ScoreMeter from "@/components/ScoreMeter";
-import { scorePrompt } from "@/lib/quality";
 import { createBlankTemplate, loadTemplates, saveTemplates } from "@/lib/storage";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -40,26 +38,15 @@ export default function WizardPage() {
     return `You are a senior legal analyst.\n\nGoal: ${goal}\nAudience: ${audience}\nJurisdiction: ${jurisdiction}\nConstraints: ${constraints}\nTone: ${tone}\nCitations: ${citations}\nOutput format: ${outputFormat}\nSafeguards: ${safeguards}\n\nBefore final output, list any missing facts or assumptions.`;
   }, [goal, audience, jurisdiction, constraints, tone, citations, outputFormat, safeguards]);
 
-  const variables = useMemo(() => {
-    const vars = [] as string[];
-    if (goal) vars.push("goal");
-    if (audience) vars.push("audience");
-    if (jurisdiction) vars.push("jurisdiction");
-    if (constraints) vars.push("constraints");
-    return vars;
-  }, [goal, audience, jurisdiction, constraints]);
-
-  const score = scorePrompt(prompt, variables);
   const progress = Math.round(((currentStep + 1) / steps.length) * 100);
 
-  const confidence = score.total >= 85 ? "High" : score.total >= 70 ? "Medium" : "Low";
 
   const handleSave = () => {
     const existing = loadTemplates();
     const now = new Date().toISOString();
     const newTemplate = {
       ...createBlankTemplate(),
-      name: goal ? `Wizard: ${goal}` : "Wizard Template",
+      name: goal ? `Workbench: ${goal}` : "Workbench Preset",
       prompt,
       tags: ["wizard", "custom"],
       createdAt: now,
@@ -122,14 +109,14 @@ export default function WizardPage() {
     <div className="space-y-8">
       <Card variant="raised" className="p-10">
         <SectionHeader
-          eyebrow="Template Wizard"
+          eyebrow="Prompt Workbench"
           title="Build a prompt step by step."
           description="Follow best-practice guardrails to generate production-ready prompts. Each step improves clarity, context, and safeguards."
           meta={
             <>
               <Badge tone="accent">Guided flow</Badge>
               <Badge tone="neutral">8 steps</Badge>
-              <Badge tone="neutral">Quality scored</Badge>
+              <Badge tone="neutral">Structured prompts</Badge>
             </>
           }
         />
@@ -144,9 +131,6 @@ export default function WizardPage() {
             </div>
             <div className="flex items-center gap-3">
               <Tag tone="accent">{progress}% complete</Tag>
-              <Badge tone={confidence === "High" ? "success" : confidence === "Medium" ? "warning" : "danger"}>
-                Confidence: {confidence}
-              </Badge>
             </div>
           </div>
           <div className="mt-6">
@@ -210,13 +194,12 @@ export default function WizardPage() {
             </div>
           </Card>
 
-          <ScoreMeter score={score} />
 
           <Card className="p-6">
             <div className="flex items-center justify-between">
               <p className="text-xs uppercase tracking-[0.3em] text-base-300">Prompt Preview</p>
               <Button variant="secondary" size="sm" onClick={handleSave}>
-                {saved ? "Saved" : "Save to My Templates"}
+                {saved ? "Saved" : "Save Preset"}
               </Button>
             </div>
             <pre className="mt-4 max-h-[320px] overflow-auto whitespace-pre-wrap rounded-2xl border border-base-200/10 bg-base-950/60 p-4 text-xs text-base-100">

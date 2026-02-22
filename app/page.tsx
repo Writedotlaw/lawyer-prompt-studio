@@ -15,21 +15,21 @@ export default function HomePage() {
         <SectionHeader
           eyebrow="Legal Prompt Studio"
           title="Ship high-confidence prompts for real legal workflows."
-          description="A curated library of litigation, contracts, and compliance prompts with built-in guardrails, warnings, and quality scoring. Designed to help legal teams move faster without sacrificing rigor."
+          description="A curated library of litigation, contracts, and compliance prompts with built-in guardrails, warnings, and fast customization. Designed to help legal teams move faster without sacrificing rigor."
           actions={
             <>
               <Link href="/library" className={buttonStyles({ variant: "primary", size: "lg" })}>
-                Explore Library
+                Explore Prompt Library
               </Link>
               <Link href="/wizard" className={buttonStyles({ variant: "secondary", size: "lg" })}>
-                Launch Wizard
+                Open Prompt Workbench
               </Link>
             </>
           }
           meta={
             <>
               <Badge tone="success">Local-first</Badge>
-              <Badge tone="accent">Quality-scored</Badge>
+              <Badge tone="accent">Lawyer-ready</Badge>
               <Badge tone="neutral">Template-ready</Badge>
             </>
           }
@@ -39,7 +39,7 @@ export default function HomePage() {
       <section className="grid gap-6 lg:grid-cols-3">
         {[
           {
-            title: "Library confidence",
+            title: "Prompt library confidence",
             stat: "120+",
             detail: "Templates across litigation, contracts, compliance, and client comms."
           },
@@ -49,9 +49,9 @@ export default function HomePage() {
             detail: "Guardrail categories covering jurisdiction, citations, and escalation."
           },
           {
-            title: "Prompt quality",
-            stat: "100",
-            detail: "Scoring rubric to maintain consistency and readiness."
+            title: "One-click workflow",
+            stat: "Copy / TXT / MD",
+            detail: "Customize and export prompts instantly for any AI tool."
           }
         ].map((item) => (
           <Card key={item.title} className="p-6">
@@ -73,8 +73,8 @@ export default function HomePage() {
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {[
               "Search by practice area, task, or model",
-              "Use the wizard to create custom prompts",
-              "Save to My Templates with version history",
+              "Use the workbench to create custom prompts",
+              "Save Presets with version history",
               "Export to JSON or Markdown for reuse"
             ].map((item) => (
               <div key={item} className="flex items-start gap-3 rounded-2xl border border-base-200/10 bg-base-900/60 p-4">
@@ -117,10 +117,10 @@ export default function HomePage() {
           </div>
           <div className="flex flex-wrap gap-3">
             <Link href="/library" className={buttonStyles({ variant: "primary", size: "lg" })}>
-              Browse Templates
+              Browse Prompt Library
             </Link>
             <Link href="/my-templates" className={buttonStyles({ variant: "outline", size: "lg" })}>
-              View My Templates
+              View Saved Prompts
             </Link>
           </div>
         </div>
