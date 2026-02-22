@@ -1,6 +1,6 @@
 # Lawyer Prompt Studio
 
-MVP web app for ready-to-ship legal prompt templates plus a guided template wizard.
+MVP web app for practical legal prompt templates plus a guided prompt builder.
 
 ## Features
 

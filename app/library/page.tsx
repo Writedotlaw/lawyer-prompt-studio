@@ -75,7 +75,7 @@ export default function LibraryPage() {
       <Card variant="raised" className="p-10">
         <SectionHeader
           eyebrow="Prompt Library"
-          title="Ready-to-ship legal prompts for every matter type."
+          title="Practical legal prompts for every matter type."
           description="Browse, filter, and copy proven prompts across litigation, contracts, research, client communications, and compliance. Every template includes variables, warnings, and example outputs."
           meta={
             <>

@@ -14,7 +14,7 @@ export default function HomePage() {
       <Card variant="raised" className="p-10">
         <SectionHeader
           eyebrow="Legal Prompt Studio"
-          title="Ship high-confidence prompts for real legal workflows."
+          title="Build better legal prompts for real legal workflows."
           description="A curated library of litigation, contracts, and compliance prompts with built-in guardrails, warnings, and fast customization. Designed to help legal teams move faster without sacrificing rigor."
           actions={
             <>

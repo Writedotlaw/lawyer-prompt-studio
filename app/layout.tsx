@@ -4,7 +4,7 @@ import AppHeader from "@/components/AppHeader";
 
 export const metadata: Metadata = {
   title: "Lawyer Prompt Studio",
-  description: "Ready-to-ship legal prompt templates and a guided prompt wizard."
+  description: "Legal prompt templates and a guided prompt builder for lawyers."
 };
 
 export default function RootLayout({
