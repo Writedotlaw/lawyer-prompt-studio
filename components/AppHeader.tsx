@@ -10,7 +10,6 @@ const navLinks = [
   { href: "/", label: "Presets" },
   { href: "/library", label: "Prompt Library" },
   { href: "/wizard", label: "Prompt Workbench" },
-  { href: "/my-templates", label: "Saved Prompts" }
 ];
 
 export default function AppHeader() {

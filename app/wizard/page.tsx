@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { createBlankTemplate, loadTemplates, saveTemplates } from "@/lib/storage";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Textarea from "@/components/ui/Textarea";
@@ -32,7 +31,6 @@ export default function WizardPage() {
   const [safeguards, setSafeguards] = useState(
     "Flag missing facts, avoid legal conclusions, and remind to verify with counsel."
   );
-  const [saved, setSaved] = useState(false);
 
   const prompt = useMemo(() => {
     return `You are a senior legal analyst.\n\nGoal: ${goal}\nAudience: ${audience}\nJurisdiction: ${jurisdiction}\nConstraints: ${constraints}\nTone: ${tone}\nCitations: ${citations}\nOutput format: ${outputFormat}\nSafeguards: ${safeguards}\n\nBefore final output, list any missing facts or assumptions.`;
@@ -41,26 +39,6 @@ export default function WizardPage() {
   const progress = Math.round(((currentStep + 1) / steps.length) * 100);
 
 
-  const handleSave = () => {
-    const existing = loadTemplates();
-    const now = new Date().toISOString();
-    const newTemplate = {
-      ...createBlankTemplate(),
-      name: goal ? `Workbench: ${goal}` : "Workbench Preset",
-      prompt,
-      tags: ["wizard", "custom"],
-      createdAt: now,
-      updatedAt: now,
-      metadata: {
-        jurisdiction,
-        tone,
-        audience
-      }
-    };
-    saveTemplates([newTemplate, ...existing]);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 1500);
-  };
 
   const stepContent = [
     {
@@ -198,9 +176,7 @@ export default function WizardPage() {
           <Card className="p-6">
             <div className="flex items-center justify-between">
               <p className="text-xs uppercase tracking-[0.3em] text-base-300">Prompt Preview</p>
-              <Button variant="secondary" size="sm" onClick={handleSave}>
-                {saved ? "Saved" : "Save Preset"}
-              </Button>
+
             </div>
             <pre className="mt-4 max-h-[320px] overflow-auto whitespace-pre-wrap rounded-2xl border border-base-200/10 bg-base-950/60 p-4 text-xs text-base-100">
               {prompt}

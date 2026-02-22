@@ -74,7 +74,7 @@ export default function HomePage() {
             {[
               "Search by practice area, task, or model",
               "Use the workbench to create custom prompts",
-              "Save Presets with version history",
+              "Customize prompts in-session",
               "Export to JSON or Markdown for reuse"
             ].map((item) => (
               <div key={item} className="flex items-start gap-3 rounded-2xl border border-base-200/10 bg-base-900/60 p-4">
@@ -119,9 +119,7 @@ export default function HomePage() {
             <Link href="/library" className={buttonStyles({ variant: "primary", size: "lg" })}>
               Browse Prompt Library
             </Link>
-            <Link href="/my-templates" className={buttonStyles({ variant: "outline", size: "lg" })}>
-              View Saved Prompts
-            </Link>
+
           </div>
         </div>
       </Card>

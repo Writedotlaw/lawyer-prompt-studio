@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { templates } from "@/lib/templates";
-import { createBlankTemplate, loadTemplates, saveTemplates } from "@/lib/storage";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Tag from "@/components/ui/Tag";
@@ -13,7 +12,6 @@ import Badge from "@/components/ui/Badge";
 export default function TemplateDetailClient({ id }: { id: string }) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
-  const [saved, setSaved] = useState(false);
 
   const template = useMemo(() => templates.find((item) => item.id === id), [id]);
 
@@ -32,26 +30,6 @@ export default function TemplateDetailClient({ id }: { id: string }) {
     setTimeout(() => setCopied(false), 1500);
   };
 
-  const handleSave = () => {
-    const existing = loadTemplates();
-    const now = new Date().toISOString();
-    const newTemplate = {
-      ...createBlankTemplate(),
-      name: template.name,
-      prompt: template.prompt,
-      tags: template.tags,
-      createdAt: now,
-      updatedAt: now,
-      metadata: {
-        jurisdiction: template.variables.find((v) => v.includes("jurisdiction")),
-        tone: "Professional",
-        audience: "Internal"
-      }
-    };
-    saveTemplates([newTemplate, ...existing]);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 1500);
-  };
 
   const downloadContent = (content: string, filename: string, type = "text/plain;charset=utf-8") => {
     const blob = new Blob([content], { type });
@@ -185,9 +163,6 @@ export default function TemplateDetailClient({ id }: { id: string }) {
               onClick={() => downloadContent(markdownExport, `${fileBase}.md`, "text/markdown;charset=utf-8")}
             >
               Download MD
-            </Button>
-            <Button variant="secondary" size="sm" onClick={handleSave}>
-              {saved ? "Saved" : "Save Preset"}
             </Button>
           </div>
         </Card>
