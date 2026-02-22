@@ -109,8 +109,8 @@ export default function HomePage() {
       <Card variant="raised" className="p-8">
         <div className="flex flex-wrap items-center justify-between gap-6">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-base-300">Ready for production</p>
-            <h2 className="mt-3 text-3xl text-base-50">Launch with clarity and guardrails.</h2>
+            <p className="text-xs uppercase tracking-[0.3em] text-base-300">For legal practice</p>
+            <h2 className="mt-3 text-3xl text-base-50">Work with clarity and guardrails.</h2>
             <p className="mt-3 text-sm text-base-200/90">
               Build prompts that keep teams aligned, reduce rework, and scale knowledge across matters.
             </p>
